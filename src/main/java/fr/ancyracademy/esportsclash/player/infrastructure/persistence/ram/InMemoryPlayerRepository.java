@@ -6,8 +6,10 @@ import lombok.Data;
 import java.util.HashMap;
 import java.util.Map;
 import fr.ancyracademy.esportsclash.player.application.port.PlayerRepository;
+import org.springframework.stereotype.Repository;
 
 @Data
+@Repository
 public class InMemoryPlayerRepository implements PlayerRepository {
     Map<String, Player> players = new HashMap<>();
     @Override
