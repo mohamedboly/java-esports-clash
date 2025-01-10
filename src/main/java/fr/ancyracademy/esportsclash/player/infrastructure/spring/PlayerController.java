@@ -1,5 +1,9 @@
-package fr.ancyracademy.esportsclash.player;
+package fr.ancyracademy.esportsclash.player.infrastructure.spring;
 
+import an.awesome.pipelinr.Pipeline;
+import fr.ancyracademy.esportsclash.player.application.port.usecases.CreatePlayerCommand;
+
+import fr.ancyracademy.esportsclash.player.domain.viewmodel.IdResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,16 +14,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/players")
 public class PlayerController {
-    private final PlayerRepository playerRepository;
-    public PlayerController(PlayerRepository playerRepository){
-        this.playerRepository = playerRepository;
+    private final Pipeline pipeline;
+
+    public PlayerController(Pipeline pipeline){
+        this.pipeline = pipeline;
     }
 
     @PostMapping(path = "")
     public ResponseEntity<IdResponse> createPlayer(@RequestBody CreatePlayerDTO dto){
-        var useCase = new  CreatePlayerUseCase(playerRepository);
-        var result = useCase.execute(dto.getName());
-
+        var result = this.pipeline.send(new CreatePlayerCommand(dto.getName()));
         return  new ResponseEntity<>(new IdResponse(result.getId()), HttpStatus.CREATED);
     }
 }
